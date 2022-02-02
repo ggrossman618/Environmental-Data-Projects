@@ -18,8 +18,17 @@ b/2
 
 # Question 2: Working with vectors and variables
 
-w <- 2
-x <- 4
-y <- 6
-z <- 8
-myVector - c(w,x,y,z)
+w <- 4
+x <- 6
+y <- 8
+z <- 10
+
+myVector <- c(2,w,x,y,z)
+print(myVector)
+
+myVector2 <- c(1,3,5,7,9)
+
+print(myVector+myVector2) 
+print(myVector-myVector2)
+print(myVector/myVector2)
+
