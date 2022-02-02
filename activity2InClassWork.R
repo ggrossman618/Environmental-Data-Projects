@@ -2,7 +2,7 @@
 # 01/21/22
 
 # Set working directory to my noaa data folder 
-setwd("Z:/students/ggrossman/data/noaa_weather")
+setwd("Z:\students\ggrossman\data\noaa_weather")
 
 # Make a vector
 heights <- c(30,41,20,22)
@@ -20,4 +20,4 @@ reverse_vector <- 99:1
 my_matrix <- matrix(c(1,2,3,4,5,6), ncol=2, byrow=TRUE)
 
 # read weather data into variable
-dataW <- read.csv("2011124.csv")
+dataW <- read.csv("Z:/students/ggrossman/data/noaa_weather/2011124.csv")
