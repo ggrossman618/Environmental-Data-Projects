@@ -1,1 +1,3 @@
-my script
+#my first script
+
+print("Hello World")
