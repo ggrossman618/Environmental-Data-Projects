@@ -28,6 +28,7 @@ datW <- read.csv("Z:/students/ggrossman/data/noaa_weather/2011124.csv")
 # change data format 
 datW$dateF <- as.Date(datW$DATE, "%Y-%m-%d")
 datW$year <- as.numeric(format(datW$dateF,"%Y"))
+datW$NAME <- as.factor(datW$NAME)
  
 # question 2 vectors
 character_vector <- c("H", "E", "L", "L", "O")
@@ -54,8 +55,8 @@ par(mfrow=c(2,2))
 # histogram for frequency of average daily temperatures in Aberdeen
 hist(datW$TAVE[datW$NAME == "ABERDEEN, WA US"],
      freq=FALSE, 
-     #main = paste(levels(datW$NAME)[1]), # can replace line with main = "aberdeen..." to display name
-     main = "ABERDEEN, WA US",
+     main = paste(levels(datW$NAME)[1]), # can replace line with main = "aberdeen..." to display name
+     #main = "ABERDEEN, WA US",
      xlab = "Average daily temperature (degrees C)", 
      ylab="Relative frequency",
      col="grey50",
@@ -81,8 +82,8 @@ abline(v = mean(datW$TAVE[datW$NAME == "ABERDEEN, WA US"],na.rm=TRUE) + sd(datW$
 # question #4, histogram 2
 hist(datW$TAVE[datW$NAME == "MORMON FLAT, AZ US"],
      freq=FALSE, 
-     #main = paste(levels(datW$NAME)[1]), # can replace line with main = "aberdeen..." to display name
-     main = "MORMON FLAT, AZ US",
+     main = paste(levels(datW$NAME)[4]), # can replace line with main = "aberdeen..." to display name
+     #main = "MORMON FLAT, AZ US",
      xlab = "Average daily temperature (degrees C)", 
      ylab="Relative frequency",
      col="pink",
@@ -108,8 +109,8 @@ abline(v = mean(datW$TAVE[datW$NAME == "MORMON FLAT, AZ US"],na.rm=TRUE) + sd(da
 # question #4, histogram 3
 hist(datW$TAVE[datW$NAME == "MANDAN EXPERIMENT STATION, ND US"],
      freq=FALSE, 
-     #main = paste(levels(datW$NAME)[1]), # can replace line with main = "aberdeen..." to display name
-     main = "MANDAN EXPERIMENT STATION, ND US",
+     main = paste(levels(datW$NAME)[3]), # can replace line with main = "aberdeen..." to display name
+     #main = "MANDAN EXPERIMENT STATION, ND US",
      xlab = "Average daily temperature (degrees C)", 
      ylab="Relative frequency",
      col="green",
@@ -136,8 +137,8 @@ abline(v = mean(datW$TAVE[datW$NAME == "MANDAN EXPERIMENT STATION, ND US"],na.rm
 # question #4, histogram 4
 hist(datW$TAVE[datW$NAME == "LIVERMORE, CA US"],
      freq=FALSE, 
-     #main = paste(levels(datW$NAME)[1]), # can replace line with main = "aberdeen..." to display name
-     main = "LIVERMORE, CA US",
+     main = paste(levels(datW$NAME)[2]), # can replace line with main = "aberdeen..." to display name
+     #main = "LIVERMORE, CA US",
      xlab = "Average daily temperature (degrees C)", 
      ylab="Relative frequency",
      col="blue",
