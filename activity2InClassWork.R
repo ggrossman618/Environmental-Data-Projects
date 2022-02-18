@@ -52,11 +52,13 @@ datW$siteN <- as.numeric(datW$NAME)
 
 par(mfrow=c(2,2))
 
+
+
+
 # histogram for frequency of average daily temperatures in Aberdeen
-hist(datW$TAVE[datW$NAME == "ABERDEEN, WA US"],
+h1 <- hist(datW$TAVE[datW$NAME == "ABERDEEN, WA US"],
      freq=FALSE, 
      main = paste(levels(datW$NAME)[1]), # can replace line with main = "aberdeen..." to display name
-     #main = "ABERDEEN, WA US",
      xlab = "Average daily temperature (degrees C)", 
      ylab="Relative frequency",
      col="grey50",
@@ -79,11 +81,56 @@ abline(v = mean(datW$TAVE[datW$NAME == "ABERDEEN, WA US"],na.rm=TRUE) + sd(datW$
        lty = 3,
        lwd = 3)
 
+#the seq function generates a sequence of numbers that we can use to plot the normal across the range of temperature values
+x.plot <- seq(-10,30, length.out = 100)
+
+#the dnorm function will produce the probability density based on a mean and standard deviation.
+
+y.plot <-  dnorm(seq(-10,30, length.out = 100),
+                 mean(datW$TAVE[datW$siteN == 1],na.rm=TRUE),
+                 sd(datW$TAVE[datW$siteN == 1],na.rm=TRUE))
+
+y.scaled <- (max(h1$density)/max(y.plot)) * y.plot
+
+#points function adds points or lines to a graph  
+#the first two arguments are the x coordinates and the y coordinates.
+
+points(x.plot,
+       y.scaled, 
+       type = "l", 
+       col = "royalblue3",
+       lwd = 4, 
+       lty = 2)
+
+# probability of low temperatures
+probBelowZero <- pnorm(0,
+      mean(datW$TAVE[datW$siteN == 1],na.rm=TRUE),
+      sd(datW$TAVE[datW$siteN == 1],na.rm=TRUE))
+
+probBelowFive <- pnorm(5,
+      mean(datW$TAVE[datW$siteN == 1],na.rm=TRUE),
+      sd(datW$TAVE[datW$siteN == 1],na.rm=TRUE))
+
+probBetweenZeroFive <-  pnorm(5,
+      mean(datW$TAVE[datW$siteN == 1],na.rm=TRUE),
+      sd(datW$TAVE[datW$siteN == 1],na.rm=TRUE))- pnorm(0,
+      mean(datW$TAVE[datW$siteN == 1],na.rm=TRUE),
+      sd(datW$TAVE[datW$siteN == 1],na.rm=TRUE))
+
+# probability of high temperatures
+
+probAboveTwenty <- 1 - pnorm(20,
+      mean(datW$TAVE[datW$siteN == 1],na.rm=TRUE),
+      sd(datW$TAVE[datW$siteN == 1],na.rm=TRUE))
+
+probBelowTwenty <- qnorm(0.95,
+      mean(datW$TAVE[datW$siteN == 1],na.rm=TRUE),
+      sd(datW$TAVE[datW$siteN == 1],na.rm=TRUE))
+
 # question #4, histogram 2
-hist(datW$TAVE[datW$NAME == "MORMON FLAT, AZ US"],
+h2 <- hist(datW$TAVE[datW$NAME == "MORMON FLAT, AZ US"],
      freq=FALSE, 
      main = paste(levels(datW$NAME)[4]), # can replace line with main = "aberdeen..." to display name
-     #main = "MORMON FLAT, AZ US",
      xlab = "Average daily temperature (degrees C)", 
      ylab="Relative frequency",
      col="pink",
@@ -106,11 +153,13 @@ abline(v = mean(datW$TAVE[datW$NAME == "MORMON FLAT, AZ US"],na.rm=TRUE) + sd(da
        lty = 3,
        lwd = 3)
 
+
+
+
 # question #4, histogram 3
-hist(datW$TAVE[datW$NAME == "MANDAN EXPERIMENT STATION, ND US"],
+h3 <- hist(datW$TAVE[datW$NAME == "MANDAN EXPERIMENT STATION, ND US"],
      freq=FALSE, 
      main = paste(levels(datW$NAME)[3]), # can replace line with main = "aberdeen..." to display name
-     #main = "MANDAN EXPERIMENT STATION, ND US",
      xlab = "Average daily temperature (degrees C)", 
      ylab="Relative frequency",
      col="green",
@@ -134,11 +183,13 @@ abline(v = mean(datW$TAVE[datW$NAME == "MANDAN EXPERIMENT STATION, ND US"],na.rm
        lwd = 3)
 
 
+
+
+
 # question #4, histogram 4
-hist(datW$TAVE[datW$NAME == "LIVERMORE, CA US"],
+h4 <-hist(datW$TAVE[datW$NAME == "LIVERMORE, CA US"],
      freq=FALSE, 
      main = paste(levels(datW$NAME)[2]), # can replace line with main = "aberdeen..." to display name
-     #main = "LIVERMORE, CA US",
      xlab = "Average daily temperature (degrees C)", 
      ylab="Relative frequency",
      col="blue",
@@ -162,3 +213,30 @@ abline(v = mean(datW$TAVE[datW$NAME == "LIVERMORE, CA US"],na.rm=TRUE) + sd(datW
        lwd = 3)
 
 
+
+# Question 6
+Q6Prob <- 1 - pnorm(20,
+                mean(datW$TAVE[datW$siteN == 1]+4,na.rm=TRUE),
+                sd(datW$TAVE[datW$siteN == 1],na.rm=TRUE))
+
+# Question 7 
+q7Hist <- hist(datW$PRCP[datW$NAME == "ABERDEEN, WA US"],
+           freq=FALSE, 
+           main = paste(levels(datW$NAME)[1]), # can replace line with main = "aberdeen..." to display name
+           xlab = "Average daily precipitation", 
+           ylab="Relative frequency",
+           col="grey50",
+           border="white")
+
+# Question 8
+yearlySum <- aggregate(datW$PRCP, by=list(datW$year, datW$NAME), FUN="sum", na.rm=TRUE)
+q8Hist = hist(yearlySum$x[yearlySum$Group.2 == "ABERDEEN, WA US"],
+  freq=FALSE, 
+  main = "ABERDEEN, WA US",
+  xlab = "Yearly Precipitation mm", 
+  ylab="Relative frequency",
+  col="pink",
+  border="white")
+
+# Question 9
+annPrecipMean <- aggregate(datW$PRCP, by=list(datW$NAME), FUN="mean", na.rm=TRUE)
