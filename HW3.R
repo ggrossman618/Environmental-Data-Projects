@@ -4,6 +4,12 @@
 datW <- read.csv("Z:/students/ggrossman/data/bewkes_weather/bewkes_weather.csv",
                  na.strings=c("#N/A"), skip=3, header=FALSE)
 
+#get sensor info from file
+# this data table will contain all relevant units
+sensorInfo <-   read.csv("Z:/students/ggrossman/data/bewkes_weather/bewkes_weather.csv",
+                         na.strings=c("#N/A"), nrows=2)
+
+
 #preview data
 print(datW[1,])
 
