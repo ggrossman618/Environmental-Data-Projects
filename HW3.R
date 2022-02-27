@@ -9,6 +9,8 @@ assert <- function(statement,err.message){
   #if evaluates if a statement is true or false for a single item
   if(statement == FALSE){
     print(err.message)
+  } else {
+    print("Statement is true")
   }
   
 }
@@ -129,3 +131,10 @@ points(datW$DD[datW$precipitation > 0], datW$precipitation[datW$precipitation > 
 #plot lightning points only when there is lightning     
 points(datW$DD[lightscale > 0], lightscale[lightscale > 0],
        col= "tomato3", pch=19)
+
+
+
+#Question 5 evidence test
+assert(!is.null(datW$DD[lightscale > 0]), "doesn't exist in datW")
+
+
