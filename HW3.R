@@ -8,9 +8,9 @@
 assert <- function(statement,err.message){
   #if evaluates if a statement is true or false for a single item
   if(statement == FALSE){
-    print(err.message)
+    return(err.message)
   } else {
-    print("Statement is true")
+    return("Statement is true")
   }
   
 }
@@ -152,4 +152,10 @@ datW$wind.speed <- ifelse(datW$precipitation  >= 2 & datW$lightning.acvitivy >0,
                           ifelse(datW$precipitation > 5, NA, datWdatW$wind.speed))
 
 #remove suspect measurements from wind speed test
-
+testSixReturn <- TRUE
+for(i in datW$wind.speed) {
+  if(assert(i<2, "false") == "false"){
+    testSixReturn <- FALSE
+  }
+}
+print(testSixReturn)
