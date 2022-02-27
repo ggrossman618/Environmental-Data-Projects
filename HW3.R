@@ -138,3 +138,18 @@ points(datW$DD[lightscale > 0], lightscale[lightscale > 0],
 assert(!is.null(datW$DD[lightscale > 0]), "doesn't exist in datW")
 
 
+#filter out storms in wind and air temperature measurements
+# filter all values with lightning that coincides with rainfall greater than 2mm or only rainfall over 5 mm.    
+#create a new air temp column
+datW$air.tempQ2 <- ifelse(datW$precipitation  >= 2 & datW$lightning.acvitivy >0, NA,
+                          ifelse(datW$precipitation > 5, NA, datW$air.tempQ1))
+
+
+#question 6
+
+#remove suspect measurements from wind speed
+datW$wind.speed <- ifelse(datW$precipitation  >= 2 & datW$lightning.acvitivy >0, NA,
+                          ifelse(datW$precipitation > 5, NA, datWdatW$wind.speed))
+
+#remove suspect measurements from wind speed test
+
