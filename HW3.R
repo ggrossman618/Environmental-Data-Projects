@@ -149,7 +149,7 @@ datW$air.tempQ2 <- ifelse(datW$precipitation  >= 2 & datW$lightning.acvitivy >0,
 
 #remove suspect measurements from wind speed
 datW$wind.speed <- ifelse(datW$precipitation  >= 2 & datW$lightning.acvitivy >0, NA,
-                          ifelse(datW$precipitation > 5, NA, datWdatW$wind.speed))
+                          ifelse(datW$precipitation > 5, NA, datW$wind.speed))
 
 #remove suspect measurements from wind speed test
 testSixReturn <- TRUE
@@ -158,4 +158,10 @@ for(i in datW$wind.speed) {
     testSixReturn <- FALSE
   }
 }
+
+
+assert(if(datW$precipitation  >= 2 && datW$lightning.lightning.acvitivy > 0){
+  if(is.na(datW$wind.speed))
+})
+
 print(testSixReturn)
