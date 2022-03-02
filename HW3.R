@@ -133,8 +133,10 @@ points(datW$DD[lightscale > 0], lightscale[lightscale > 0],
        col= "tomato3", pch=19)
 
 
-
+##################################
 #Question 5 evidence test
+##################################
+
 assert(!is.null(datW$DD[lightscale > 0]), "doesn't exist in datW")
 
 
@@ -144,24 +146,49 @@ assert(!is.null(datW$DD[lightscale > 0]), "doesn't exist in datW")
 datW$air.tempQ2 <- ifelse(datW$precipitation  >= 2 & datW$lightning.acvitivy >0, NA,
                           ifelse(datW$precipitation > 5, NA, datW$air.tempQ1))
 
-
+##################################
 #question 6
+##################################
+
 
 #remove suspect measurements from wind speed
 datW$wind.speed <- ifelse(datW$precipitation  >= 2 & datW$lightning.acvitivy >0, NA,
                           ifelse(datW$precipitation > 5, NA, datW$wind.speed))
 
-#remove suspect measurements from wind speed test
-testSixReturn <- TRUE
-for(i in datW$wind.speed) {
-  if(assert(i<2, "false") == "false"){
-    testSixReturn <- FALSE
+
+#test to verify that filter works
+
+conditionOne <- is.na(datW$wind.speed[datW$precipitation >= 2 & datW$lightning.acvitivy >0])
+conditionTwo <- is.na(datW$wind.speed[datW$precipitation >5])
+cond1Flag <- TRUE
+cond2Flag <- TRUE
+doesFilterWork <- TRUE
+
+for(i in conditionOne){
+  if(assert(is.na(i), "Not Marked") == "Not Marked"){
+    cond1Flag <- FALSE
+  }
+}
+for(i in conditionTwo){
+  if(assert(is.na(i), "Not Marked") == "Not Marked"){
+    cond2Flag <- FALSE
   }
 }
 
+if(cond1Flag == TRUE & cond2Flag == TRUE){
+  doesFilterWork <- TRUE
+} else {
+  doesFilterWork <- FALSE
+}
 
-assert(if(datW$precipitation  >= 2 && datW$lightning.lightning.acvitivy > 0){
-  if(is.na(datW$wind.speed))
-})
+doesFilterWork
 
-print(testSixReturn)
+#remove suspect measurements from wind speed test
+#testSixReturn <- TRUE
+#for(i in datW$wind.speed) {
+#  if(assert(i<2, "false") == "false"){
+#    testSixReturn <- FALSE
+#  }
+#}
+
+
