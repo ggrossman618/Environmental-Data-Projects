@@ -158,37 +158,40 @@ datW$wind.speed <- ifelse(datW$precipitation  >= 2 & datW$lightning.acvitivy >0,
 
 #test to verify that filter works
 
+#create a vector containing if all values that meet condition one are TRUE or FALSE
 conditionOne <- is.na(datW$wind.speed[datW$precipitation >= 2 & datW$lightning.acvitivy >0])
+
+#create a vector containing if all values that meet condition two are TRUE or FALS
 conditionTwo <- is.na(datW$wind.speed[datW$precipitation >5])
+
+#create flags which will become false if a value in NA vectors are false
 cond1Flag <- TRUE
 cond2Flag <- TRUE
-doesFilterWork <- TRUE
 
+#create final variable which will hold boolean TRUE/FALSE if test is true or false
+doesFilterWork <- NA
+
+
+#iterate through conditionOne checking if any values are FALSE (in other words, if 
+#any values were not changed to NA in wind.speeed), and change flag if filter fails
 for(i in conditionOne){
-  if(assert(is.na(i), "Not Marked") == "Not Marked"){
+  if(assert(i == TRUE, "Not Marked") == "Not Marked"){
     cond1Flag <- FALSE
   }
 }
+
+#iterate through conditionTwo checking if any values are FALSE, and change flag if filter fails
 for(i in conditionTwo){
-  if(assert(is.na(i), "Not Marked") == "Not Marked"){
+  if(assert(i == TRUE, "Not Marked") == "Not Marked"){
     cond2Flag <- FALSE
   }
 }
 
+#set final variable to TRUE if both condition flags are still true, and FALSE otherise
 if(cond1Flag == TRUE & cond2Flag == TRUE){
   doesFilterWork <- TRUE
 } else {
   doesFilterWork <- FALSE
 }
 
-doesFilterWork
-
-#remove suspect measurements from wind speed test
-#testSixReturn <- TRUE
-#for(i in datW$wind.speed) {
-#  if(assert(i<2, "false") == "false"){
-#    testSixReturn <- FALSE
-#  }
-#}
-
-
+#doesFilterWork now equals true, since test passes
