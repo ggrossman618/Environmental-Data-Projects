@@ -161,7 +161,7 @@ datW$wind.speed <- ifelse(datW$precipitation  >= 2 & datW$lightning.acvitivy >0,
 #create a vector containing if all values that meet condition one are TRUE or FALSE
 conditionOne <- is.na(datW$wind.speed[datW$precipitation >= 2 & datW$lightning.acvitivy >0])
 
-#create a vector containing if all values that meet condition two are TRUE or FALS
+#create a vector containing if all values that meet condition two are TRUE or FALSE
 conditionTwo <- is.na(datW$wind.speed[datW$precipitation >5])
 
 #create flags which will become false if a value in NA vectors are false
@@ -195,3 +195,33 @@ if(cond1Flag == TRUE & cond2Flag == TRUE){
 }
 
 #doesFilterWork now equals true, since test passes
+
+#Plot of wind speed
+plot(datW$wind.speed, pch=19, type="b", xlab="Days", ylab="Wind Speed")
+
+
+
+##################################
+#question 7
+##################################
+par(mfrow=c(2,2))
+plot(datW$DD, datW$soil.temp, pch=19, xlim=c(163,192), xlab="Days", ylab="Soil Temp")
+plot(datW$DD, datW$soil.moisture, pch=19, xlim=c(163,192), xlab="Days", ylab="Soil Moisture")
+plot(datW$DD, datW$air.temperature, pch=19, xlim=c(163,192), xlab="Days", ylab="Air Temp")
+plot(datW$DD, datW$precipitation, pch=19, xlim=c(163,192), xlab="Days", ylab="Precipitation")
+
+
+##################################
+#question 8
+##################################
+
+q8Table <- data.frame("Average Air Temp" = round(mean(datW$air.temperature, na.rm=TRUE), digits=1), "Average Wind Speed" = round(mean(datW$wind.speed, na.rm=TRUE), digits=2), "Average Soil Moisture" = round(mean(datW$soil.moisture, na.rm=TRUE), digits=3), "Average Soil Temp" = round(mean(datW$soil.temp, na.rm=TRUE),1))
+
+##################################
+#question 9
+##################################
+par(mfrow=c(2,2))
+plot(datW$DD, datW$soil.temp, pch=19, xlab="Days", ylab="Soil Temp")
+plot(datW$DD, datW$soil.moisture, pch=19, xlab="Days", ylab="Soil Moisture")
+plot(datW$DD, datW$air.temperature, pch=19, xlab="Days", ylab="Air Temp")
+plot(datW$DD, datW$precipitation, pch=19, xlab="Days", ylab="Precipitation")
