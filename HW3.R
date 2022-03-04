@@ -137,18 +137,18 @@ points(datW$DD[lightscale > 0], lightscale[lightscale > 0],
 #Question 5 evidence test
 ##################################
 
-assert(!is.null(datW$DD[lightscale > 0]), "doesn't exist in datW")
+assert(length(lightscale) == length(datW$precipitation), "doesn't exist in datW")
 
-
-#filter out storms in wind and air temperature measurements
-# filter all values with lightning that coincides with rainfall greater than 2mm or only rainfall over 5 mm.    
-#create a new air temp column
-datW$air.tempQ2 <- ifelse(datW$precipitation  >= 2 & datW$lightning.acvitivy >0, NA,
-                          ifelse(datW$precipitation > 5, NA, datW$air.tempQ1))
 
 ##################################
 #question 6
 ##################################
+
+#filter out storms in wind and air temperature measurements
+#filter all values with lightning that coincides with rainfall greater than 2mm or only rainfall over 5 mm.    
+#create a new air temp column
+datW$air.tempQ2 <- ifelse(datW$precipitation  >= 2 & datW$lightning.acvitivy >0, NA,
+                          ifelse(datW$precipitation > 5, NA, datW$air.tempQ1))
 
 
 #remove suspect measurements from wind speed
@@ -169,6 +169,8 @@ cond1Flag <- TRUE
 cond2Flag <- TRUE
 
 #create final variable which will hold boolean TRUE/FALSE if test is true or false
+#could have set doesFilterWork to true and changed it to false if the test fails, but
+#would rather it return NA to make sure the test isn't broken
 doesFilterWork <- NA
 
 
@@ -204,7 +206,10 @@ plot(datW$wind.speed, pch=19, type="b", xlab="Days", ylab="Wind Speed")
 ##################################
 #question 7
 ##################################
+
+#allows you to see all 4 graphs at once
 par(mfrow=c(2,2))
+
 plot(datW$DD, datW$soil.temp, pch=19, xlim=c(163,192), xlab="Days", ylab="Soil Temp")
 plot(datW$DD, datW$soil.moisture, pch=19, xlim=c(163,192), xlab="Days", ylab="Soil Moisture")
 plot(datW$DD, datW$air.temperature, pch=19, xlim=c(163,192), xlab="Days", ylab="Air Temp")
@@ -215,12 +220,22 @@ plot(datW$DD, datW$precipitation, pch=19, xlim=c(163,192), xlab="Days", ylab="Pr
 #question 8
 ##################################
 
-q8Table <- data.frame("Average Air Temp" = round(mean(datW$air.temperature, na.rm=TRUE), digits=1), "Average Wind Speed" = round(mean(datW$wind.speed, na.rm=TRUE), digits=2), "Average Soil Moisture" = round(mean(datW$soil.moisture, na.rm=TRUE), digits=3), "Average Soil Temp" = round(mean(datW$soil.temp, na.rm=TRUE),1))
+#create data frame which stores the average air and soil temp, wind speed, soil moisture. 
+#Also includes total precipitation
+q8Table <- data.frame("Average Air Temp" = round(mean(datW$air.temperature, na.rm=TRUE), digits=1), 
+                      "Average Wind Speed" = round(mean(datW$wind.speed, na.rm=TRUE), digits=2), 
+                      "Average Soil Moisture" = round(mean(datW$soil.moisture, na.rm=TRUE), digits=3), 
+                      "Average Soil Temp" = round(mean(datW$soil.temp, na.rm=TRUE),1), 
+                      "Total Precipitation" = sum(datW$precipitation))
 
 ##################################
 #question 9
 ##################################
+
 par(mfrow=c(2,2))
+
+#same thing as question #7, but without xlim, since we want to look at
+#all observations from the study period
 plot(datW$DD, datW$soil.temp, pch=19, xlab="Days", ylab="Soil Temp")
 plot(datW$DD, datW$soil.moisture, pch=19, xlab="Days", ylab="Soil Moisture")
 plot(datW$DD, datW$air.temperature, pch=19, xlab="Days", ylab="Air Temp")
