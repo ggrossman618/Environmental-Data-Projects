@@ -137,7 +137,7 @@ points(datW$DD[lightscale > 0], lightscale[lightscale > 0],
 #Question 5 evidence test
 ##################################
 
-assert(length(lightscale) == length(datW$precipitation), "doesn't exist in datW")
+assert(length(lightscale) == length(datW$precipitation), "Test Failed")
 
 
 ##################################
