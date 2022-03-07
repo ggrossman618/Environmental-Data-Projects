@@ -26,10 +26,10 @@ library(ggplot2)
 versicolor <- iris[iris$Species == "versicolor", ]
 firstCond <- list(versicolor$Sepal.Length, versicolor$Petal.Length, versicolor$Sepal.Length)
 secondCond <- list(versicolor$Petal.Width, versicolor$Petal.Width, versicolor$Petal.Length)
-regressionList <- list(0,0,0)
+regressionList <- list(NA,NA,NA)
 
 for(i in 1:3){
-  regressionList[i] <- lm(firstCond[i], secondCond[i])
+  regressionList[i] <- lm(unlist(firstCond[i]) ~ unlist(secondCond[i]))
 }
 
 regressionList
