@@ -62,6 +62,7 @@ plot(iris$Sepal.Length,iris$Sepal.Width)
 
 #3a. now make the same plot in ggplot
 
+ggplot(iris, aes(Sepal.Length, Sepal.Width)) + geom_point() 
 
 #3b. make a scatter plot with ggplot and get rid of  busy grid lines
 
