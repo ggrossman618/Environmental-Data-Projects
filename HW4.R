@@ -66,18 +66,28 @@ ggplot(iris, aes(Sepal.Length, Sepal.Width)) + geom_point()
 
 #3b. make a scatter plot with ggplot and get rid of  busy grid lines
 
-ggplot(iris, aes(Sepal.Length, Sepal.Width)) + geom_point() 
-+ theme(panel.grid.major.x = element_blank()) 
-+ theme(panel.grid.major.y = element_blank()) 
-+ theme(panel.grid.minor.x = element_blank()) 
-+ theme(panel.grid.minor.y = element_blank()) 
+ggplot(iris, aes(Sepal.Length, Sepal.Width)) + geom_point() + theme(panel.grid.major.x = element_blank()) + theme(panel.grid.major.y = element_blank()) + theme(panel.grid.minor.x = element_blank()) + theme(panel.grid.minor.y = element_blank()) 
  
 
 #3c. make a scatter plot with ggplot, remove grid lines, add a title and axis labels, 
 #    show species by color, and make the point size proportional to petal length
+
+scatterplot <- ggplot(iris, aes(Sepal.Length, Sepal.Width, color=Species))
+scatterplot <- scatterplot + geom_point() + theme(panel.grid.major.x = element_blank()) 
+scatterplot <- scatterplot + theme(panel.grid.major.y = element_blank()) 
+scatterplot <- scatterplot + theme(panel.grid.minor.x = element_blank()) 
+scatterplot <- scatterplot + theme(panel.grid.minor.y = element_blank()) 
+scatterplot <- scatterplot + labs(title = "Iris Species Length vs Width",
+                                  x = "Sepal Length", y = "Sepal Length") 
+scatterplot <- scatterplot + geom_point(size = iris$Petal.Length) 
+
+scatterplot #keeping this in so you can see all the changes to scatterplot
+
 
 #####################################
 ##### Question: how did         #####
 ##### arguments differ between  #####
 ##### plot and ggplot?          #####
 #####################################	
+
+# Answered in document
