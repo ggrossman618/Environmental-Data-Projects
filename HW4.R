@@ -22,6 +22,7 @@ library(ggplot2)
 #3. iris sepal length x petal length
 
 # hint: consider using a list, and also new vectors for regression variables
+# confermed with 
 
 versicolor <- iris[iris$Species == "versicolor", ]
 firstCond <- list(versicolor$Sepal.Length, versicolor$Petal.Length, versicolor$Sepal.Length)
@@ -44,6 +45,12 @@ regressionList
 height <- data.frame(Species = c("virginica","setosa","versicolor"),
                      Height.cm = c(60,100,11.8))
 
+iris_join <- full_join(
+  height,
+  iris
+)
+
+iris_join
 
 
 #####################################
