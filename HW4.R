@@ -43,7 +43,7 @@ regressionList
 #use dplyr to join data of maximum height
 #to a new iris data frame
 height <- data.frame(Species = c("virginica","setosa","versicolor"),
-                     Height.cm = c(60,100,11.8))
+                     Max.Height.cm = c(60,100,11.8))
 
 iris_join <- full_join(
   height,
