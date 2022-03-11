@@ -66,6 +66,8 @@ ggplot(iris, aes(Sepal.Length, Sepal.Width)) + geom_point()
 
 #3b. make a scatter plot with ggplot and get rid of  busy grid lines
 
+ggplot(iris, aes(Sepal.Length, Sepal.Width)) + geom_point() + theme(panel.grid.major.x = element_blank()) + theme(panel.grid.major.y = element_blank()) + theme(panel.grid.minor.x = element_blank()) + theme(panel.grid.minor.y = element_blank()) 
+ 
 
 #3c. make a scatter plot with ggplot, remove grid lines, add a title and axis labels, 
 #    show species by color, and make the point size proportional to petal length
