@@ -50,3 +50,11 @@ datP$decDay <- datP$doy + (datP$hour/24)
 #calculate a decimal year, but account for leap year
 datP$decYear <- ifelse(leap_year(datP$year),datP$year + (datP$decDay/366),
                        datP$year + (datP$decDay/365))  
+
+#plot discharge
+plot(datD$decYear, datD$discharge, type="l", xlab="Year", ylab=expression(paste("Discharge ft"^"3 ","sec"^"-1")))
+
+
+##################################
+#Question 4
+##################################
