@@ -58,3 +58,96 @@ plot(datD$decYear, datD$discharge, type="l", xlab="Year", ylab=expression(paste(
 ##################################
 #Question 4
 ##################################
+
+#answered in document
+
+
+#basic formatting
+aveF <- aggregate(datD$discharge, by=list(datD$doy), FUN="mean")
+colnames(aveF) <- c("doy","dailyAve")
+sdF <- aggregate(datD$discharge, by=list(datD$doy), FUN="sd")
+colnames(sdF) <- c("doy","dailySD")
+
+#start new plot
+#dev.new(width=8,height=8)
+
+#bigger margins
+par(mai=c(1,1,1,1))
+#make plot
+plot(aveF$doy,aveF$dailyAve, 
+     type="l", 
+     xlab="Months of Year", #changed from year, because it is day
+     ylab=expression(paste("Discharge ft"^"3 ","sec"^"-1")),
+     lwd=2,
+     ylim=c(0,120),
+     xaxs="i", yaxs ="i",#remove gaps from axes
+     axes=FALSE)#no axes
+polygon(c(aveF$doy, rev(aveF$doy)),#x coordinates
+        c(aveF$dailyAve-sdF$dailySD,rev(aveF$dailyAve+sdF$dailySD)),#ycoord
+        col=rgb(0.392, 0.584, 0.929,.2), #color that is semi-transparent
+        border=NA#no border
+)       
+axis(1, seq(1,366, by=30), #tick intervals
+     lab=seq(1,13, by=1),) #tick labels
+axis(2, seq(0,120, by=20),
+     seq(0,120, by=20),
+     las = 2)#show ticks at 90 degree angle
+legend("topright", c("mean","1 standard deviation"), #legend items
+       lwd=c(2,NA),#lines
+       col=c("black",rgb(0.392, 0.584, 0.929,.2)),#colors
+       pch=c(NA,15),#symbols
+       bty="n")#no legend border
+
+
+##################################
+#Question 5
+##################################
+
+# Some changes to graph above plus added line below
+lines(datD$discharge[datD$year == 2017], col="red")
+
+
+##################################
+#Question 6
+##################################
+
+# answered in document
+
+
+##################################
+#Question 7
+##################################
+
+dayCol <- c()
+yearCol <- c()
+
+prev <- 0
+yearTracker <- 2007
+row <- 1
+for(i in datP$doy){
+  if(prev > i){
+    yearTracker <- yearTracker + 1
+  }
+  
+  if(i != prev){
+    tempRowTracker <- 1
+    tempBool <- TRUE
+    for(j in datP$doy){
+      if(tempRowTracker >= row && tempRowTracker < (row + 24)){
+        if(datP$doy[tempRowTracker] != datP$doy[i]){
+          tempBool <- FALSE
+        }
+      }
+      tempRowTracker <- tempRowTracker + 1
+    }
+    
+    if(tempBool == TRUE){
+      dayCol <- append(dayCol, i)
+      yearCol <- append(yearCol, yearTracker)
+    }
+    
+    prev <- i
+    row <- row + 1
+  }
+}
+df <- data.frame(dayCol, yearCol)
