@@ -118,39 +118,37 @@ lines(datD$discharge[datD$year == 2017], col="red")
 #Question 7
 ##################################
 
-dayCol <- c()
-yearCol <- c()
+dayCol <- c() # will hold all days that have 24h measurements
+yearCol <- c() # will hold corresponding years
 
-prev <- 0
+prev <- 0 # keeps track of previous day in loop
 yearTracker <- 2007
-row <- 1
+row <- 1 # keeps track of row in loop
 for(i in datP$doy){
-  if(prev > i){
+  if(prev > i){ # if previous day is larger than current day, the year changed, increase year
     yearTracker <- yearTracker + 1
   }
-  if(i != prev){
-    tempRowTracker <- 1
-    tempBool <- TRUE
+  if(i != prev){ # if our current day is not the same as previous day, makes sure we start on first measurement of day
+    tempRowTracker <- 1 # keeps track of row in nested loop
+    tempBool <- TRUE # boolean that after loop says if day has 24 measurements
     for(j in datP$doy){
-      if(tempRowTracker >= row && tempRowTracker <= (row + 23)){
-        if(j != i){
-          tempBool <- FALSE
+      if(tempRowTracker >= row && tempRowTracker <= (row + 23)){ # if nested loop is in between first instance of outer loop day and 24 measurements after first instance of outer loop day
+        if(j != i){ # if nested loop day is not the same as outer loop day
+          tempBool <- FALSE # set boolean to false -> day does not have 24 hours of measurements
         }
       }
-      tempRowTracker <- tempRowTracker + 1
+      tempRowTracker <- tempRowTracker + 1 # iterate row in nested loop
     }
-    tempRowTracker
     
-    if(tempBool == TRUE){
+    if(tempBool == TRUE){ # if current day has 24 hours of measurements add day and year to day and year columns
       dayCol <- append(dayCol, i)
       yearCol <- append(yearCol, yearTracker)
     }
   }
-  #tempBool <- TRUE
-  prev <- i
-  row <- row + 1
+  prev <- i # set previous day to current day before moving to next day
+  row <- row + 1 # move to next row
 }
-df <- data.frame(dayCol, yearCol)
+df <- data.frame(dayCol, yearCol) #put day column and year column into a dataframe
 
 #calculate a decimal year, but account for leap year
 df$decYear <- ifelse(leap_year(df$yearCol),df$yearCol + (df$dayCol/366),
@@ -169,3 +167,10 @@ legend("topright", "24h prec.", #legend items
        col= rgb(0.392, 0.584, 0.929),#colors
        pch=c(NA,15),#symbols
        )
+
+
+# END OF Q7
+
+#subsest discharge and precipitation within range of interest
+hydroD <- datD[datD$doy >= 248 & datD$doy < 250 & datD$year == 2011,]
+hydroP <- datP[datP$doy >= 248 & datP$doy < 250 & datP$year == 2011,]
