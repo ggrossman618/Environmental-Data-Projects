@@ -128,26 +128,44 @@ for(i in datP$doy){
   if(prev > i){
     yearTracker <- yearTracker + 1
   }
-  
   if(i != prev){
     tempRowTracker <- 1
     tempBool <- TRUE
     for(j in datP$doy){
-      if(tempRowTracker >= row && tempRowTracker < (row + 24)){
-        if(datP$doy[tempRowTracker] != datP$doy[i]){
+      if(tempRowTracker >= row && tempRowTracker <= (row + 23)){
+        if(j != i){
           tempBool <- FALSE
         }
       }
       tempRowTracker <- tempRowTracker + 1
     }
+    tempRowTracker
     
     if(tempBool == TRUE){
       dayCol <- append(dayCol, i)
       yearCol <- append(yearCol, yearTracker)
     }
-    
-    prev <- i
-    row <- row + 1
   }
+  #tempBool <- TRUE
+  prev <- i
+  row <- row + 1
 }
 df <- data.frame(dayCol, yearCol)
+
+#calculate a decimal year, but account for leap year
+df$decYear <- ifelse(leap_year(df$yearCol),df$yearCol + (df$dayCol/366),
+                       df$yearCol + (df$dayCol/365))
+
+
+# Plot Discharge
+plot(datD$decYear, datD$discharge, type="l", xlab="Year", ylab=expression(paste("Discharge ft"^"3 ","sec"^"-1")),
+)
+
+for(i in df$decYear){
+  abline(v=i, col=rgb(0.392, 0.584, 0.929,.4))
+}
+legend("topright", "24h prec.", #legend items
+       lwd=c(1,NA),#lines
+       col= rgb(0.392, 0.584, 0.929),#colors
+       pch=c(NA,15),#symbols
+       )
