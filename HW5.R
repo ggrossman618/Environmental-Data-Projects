@@ -1,5 +1,6 @@
 #load in lubridate
 library(lubridate)
+library(ggplot2)
 
 #read in streamflow data
 datH <- read.csv("Z:/students/ggrossman/data/streamflow/stream_flow_data.csv", 
@@ -244,3 +245,56 @@ for(i in 1:nrow(newHydroP)){
           col=rgb(0.392, 0.584, 0.929,.2), border=NA)
 }
 
+# End of question 8
+
+#specify year as a factor
+datD$yearPlot <- as.factor(datD$year)
+#make a boxplot
+ggplot(data= datD, aes(yearPlot,discharge)) + 
+  geom_boxplot()
+# make a violin plot
+ggplot(data= datD, aes(yearPlot,discharge)) + 
+  geom_violin()
+
+
+
+##################################
+#Question 9
+##################################
+datD$yearPlot <- as.factor(datD$year)
+datD$month <- month(datesD)
+
+# 2016
+d2016 <- data.frame(datD$doy[datD$year==2016], # creating data frame which holds doy, discharge, and month for 2016
+                    datD$discharge[datD$year==2016],
+                    datD$month[datD$year==2016])
+
+
+colnames(d2016) <- c('doy','discharge','month') # changing column names from filter titles to actual names
+
+d2016$season <- ifelse((d2016$month < 3), "Winter", # using if else statements to add the season as another column, chaning them together with their y values
+                ifelse((d2016$month < 6), "Spring", 
+                ifelse((d2016$month < 9), "Summer", 
+                ifelse((d2016$month < 12), "Fall", "Winter"))))
+                
+ggplot(data= d2016, aes(season,discharge)) +  #plotting data with violin plot and title for 2016
+  geom_violin() + labs(title = '2016 Stream Flow') 
+
+
+
+
+# 2017
+d2017 <- data.frame(datD$doy[datD$year==2017], 
+                    datD$discharge[datD$year==2017],
+                    datD$month[datD$year==2017])
+
+
+colnames(d2017) <- c('doy','discharge','month')
+
+d2017$season <- ifelse((d2017$month < 3), "Winter", 
+                ifelse((d2017$month < 6), "Spring", 
+                ifelse((d2017$month < 9), "Summer", 
+                ifelse((d2017$month < 12), "Fall", "Winter"))))
+
+ggplot(data= d2017, aes(season,discharge)) + 
+  geom_violin() + labs(title = '2017 Stream Flow')
