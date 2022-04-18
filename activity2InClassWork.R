@@ -240,3 +240,4 @@ q8Hist = hist(yearlySum$x[yearlySum$Group.2 == "ABERDEEN, WA US"],
 
 # Question 9
 annPrecipMean <- aggregate(datW$PRCP, by=list(datW$NAME), FUN="mean", na.rm=TRUE)
+averageTemp <- aggregate(datW$TAVE, by=list(datW$NAME), FUN="mean", na.rm=TRUE)

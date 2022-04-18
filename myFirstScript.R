@@ -6,7 +6,7 @@ print("Hello World")
 6^6
 234+8
 15-23
-
+ 
 # Assignment and operations on variables
 a <- 6234
 a*5
