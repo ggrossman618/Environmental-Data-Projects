@@ -38,4 +38,31 @@ b2 <- project(b, crs(p))
 b3 <- buffer(b2, width = 200)
 
 # use this to crop the raster layer so we
-p2 <- crop(p, b3, filename = "20")
+p2 <- crop(p, b3, filename = "20190706_SR_crop.tif", overwrite=TRUE)
+
+# plot an rgb rendering of the data
+plotRGB(p2, r=3, g=2, b=1,
+        scale=65535,
+        stretch="lin")
+
+# calculate NDVI
+ndvi <- (p2[[4]]-p2[[3]])/(p2[[4]]+p2[[3]])
+
+names(ndvi) <- "ndvi"
+
+# create a plot of the ndvi map with sample points on top
+png(filename = "ndvi_map.png",
+    width = 6, height = 4, units = "in", res = 300)
+
+plot(ndvi)
+
+points(gtree2, cex = gtree$cc.pct/50, col = "blue")
+
+dev.off()
+
+# extract NDVI values for each point
+nt <- terra::extract(ndvi, gtree2, fun = mean, method = 'bilinear')
+
+# plot ndvi vs. canopy cover
+plot(nt$ndvi, gtree2$cc.pct,
+     pch = 16, col = "blue", xlim = c(0,1))
