@@ -3,7 +3,7 @@ library(caret)
 library(randomForest)
 
 #set up working directory for oneida data folder on the server
-setwd("Z:/GEOG331_S22/data/oneida/")
+setwd("Z:/data/oneida/sentinel/")
 
 #read in Sentinel data
 
