@@ -15,8 +15,19 @@ setwd("Z:/students/ggrossman/")
 
 # saving file paths
 f <- "Z:/GEOG331_S22/students/ggrossman/data/NEON_eddy-flux/NEON.D03.DSNY.DP4.00200.001.2017-03.basic.20220120T173946Z.RELEASE-2022/NEON.D03.DSNY.DP4.00200.001.nsae.2017-03.basic.20211220T152138Z.h5/NEON.D03.DSNY.DP4.00200.001.nsae.2017-03.basic.20211220T152138Z.h5"
-fileUrl <- "Z:/students/ggrossman/data/NEON_eddy-flux/NEON.D03.DSNY.DP4.00200.001.2017-03.basic.20220120T173946Z.RELEASE-2022/NEON.D03.DSNY.DP4.00200.001.nsae.2017-03.basic.20211220T152138Z.h5/NEON.D03.DSNY.DP4.00200.001.nsae.2017-03.basic.20211220T152138Z.h5"
+fileUrl <- "Z:/students/ggrossman/data/NEON_eddy-flux/NEON.D05.UNDE.DP4.00200.001.2021-04.basic.20220120T173946Z.RELEASE-2022/NEON.D05.UNDE.DP4.00200.001.nsae.2021-04.basic.20211221T022406Z.h5.gz"
 fileUrl2 <- "Z:/students/ggrossman/data/NEON_eddy-flux/NEON.D03.DSNY.DP4.00200.001.2020-07.basic.20220120T173946Z.RELEASE-2022/NEON.D03.DSNY.DP4.00200.001.nsae.2020-07.basic.20211220T175101Z.h5"
+
+# unzip files
+filepaths <- list.files(path = "data/NEON_eddy-flux/", pattern = ".gz", full.names = T, recursive = T)
+folderpaths <- list.dirs(path = "data/NEON_eddy-flux/")
+
+R.utils::gunzip(filepaths[1], "data/unzipped_eddy_flux/", remove = FALSE)
+
+
+for(i in filepaths){
+  unzipfileparallel(i, correctPath)
+}
 
 # Create overall data frame
 overallFrame <- data.frame()
@@ -45,6 +56,7 @@ plot(allCo2FluxNsae ~ allTime,
      type="l", pch=".", xlab="Time", ylab="CO2 flux")
 
 # add elements to overall vector
+
 
 
 
