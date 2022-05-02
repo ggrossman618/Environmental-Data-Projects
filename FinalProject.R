@@ -22,7 +22,14 @@ fileUrl2 <- "Z:/students/ggrossman/data/NEON_eddy-flux/NEON.D03.DSNY.DP4.00200.0
 filepaths <- list.files(path = "data/NEON_eddy-flux/", pattern = ".gz", full.names = T, recursive = T)
 folderpaths <- list.dirs(path = "data/NEON_eddy-flux/")
 
-R.utils::gunzip(filepaths[1], "data/unzipped_eddy_flux/", remove = FALSE)
+outfile <- list.files(path = "data/NEON_eddy-flux/", pattern = ".gz", full.names = F, recursive = T)
+i <- 1
+while(i < length(outfile)+1){
+  outfile[i] <- tools::file_path_sans_ext(i) # remove extensions .gz file extension from file name
+  i <- i+1
+}
+
+R.utils::gunzip(filepaths[1], paste("data/unzipped_eddy_flux/", outfile[1]), ext=".gz", remove = FALSE)
 
 
 for(i in filepaths){
