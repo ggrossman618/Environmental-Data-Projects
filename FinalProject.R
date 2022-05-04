@@ -8,6 +8,7 @@
 library(data.table)
 library("rhdf5")
 library(neonUtilities)
+library(stringr)
 
 # set working directory
 setwd("Z:/students/ggrossman/")
@@ -23,18 +24,16 @@ filepaths <- list.files(path = "data/NEON_eddy-flux/", pattern = ".gz", full.nam
 folderpaths <- list.dirs(path = "data/NEON_eddy-flux/")
 
 outfile <- list.files(path = "data/NEON_eddy-flux/", pattern = ".gz", full.names = F, recursive = T)
+outfile <- str_replace(outfile, ".gz", "")
+
 i <- 1
 while(i < length(outfile)+1){
-  outfile[i] <- tools::file_path_sans_ext(i) # remove extensions .gz file extension from file name
+  R.utils::gunzip(filepaths[i], paste("data/unzipped_eddy_flux/", outfile[i]), ext=".gz", remove = FALSE)
   i <- i+1
 }
 
-R.utils::gunzip(filepaths[1], paste("data/unzipped_eddy_flux/", outfile[1]), ext=".gz", remove = FALSE)
+# UNTESTED: To-do: move files out of parent folders 
 
-
-for(i in filepaths){
-  unzipfileparallel(i, correctPath)
-}
 
 # Create overall data frame
 overallFrame <- data.frame()
