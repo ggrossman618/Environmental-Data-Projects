@@ -3,7 +3,7 @@ library(caret)
 library(randomForest)
 
 #set up working directory for oneida data folder on the server
-setwd("Z:/data/oneida/sentinel/")
+setwd("Z:/data/oneida/")
 
 #read in Sentinel data
 
