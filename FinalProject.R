@@ -16,7 +16,7 @@ setwd("Z:/students/ggrossman/")
 
 # saving file paths
 f <- "Z:/GEOG331_S22/students/ggrossman/data/NEON_eddy-flux/NEON.D03.DSNY.DP4.00200.001.2017-03.basic.20220120T173946Z.RELEASE-2022/NEON.D03.DSNY.DP4.00200.001.nsae.2017-03.basic.20211220T152138Z.h5/NEON.D03.DSNY.DP4.00200.001.nsae.2017-03.basic.20211220T152138Z.h5"
-fileUrl <- "Z:/students/ggrossman/data/NEON_eddy-flux/NEON.D05.UNDE.DP4.00200.001.2021-04.basic.20220120T173946Z.RELEASE-2022/NEON.D05.UNDE.DP4.00200.001.nsae.2021-04.basic.20211221T022406Z.h5.gz"
+fileUrl <- "Z:/students/ggrossman/data/NEON_eddy-flux/NEON.D05.UNDE.DP4.00200.001.2021-04.basic.20220120T173946Z.RELEASE-2022/NEON.D05.UNDE.DP4.00200.001.nsae.2021-04.basic.20211221T022406Z.h5"
 fileUrl2 <- "Z:/students/ggrossman/data/NEON_eddy-flux/NEON.D03.DSNY.DP4.00200.001.2020-07.basic.20220120T173946Z.RELEASE-2022/NEON.D03.DSNY.DP4.00200.001.nsae.2020-07.basic.20211220T175101Z.h5"
 
 # unzip files
@@ -32,11 +32,48 @@ while(i < length(outfile)+1){
   i <- i+1
 }
 
-# UNTESTED: To-do: move files out of parent folders 
+
+# first flux to get data frame started NOT WORKING YET
+
+unzippedFilePaths <- list.files(path = "data/unzipped_eddy_flux/", pattern = ".h5", full.names = T, recursive = T)
+
+# MARCH 2017
+firstFluxPath <- "data/unzipped_eddy_flux/NEON.D03.DSNY.DP4.00200.001.2017-03.basic.20220120T173946Z.RELEASE-2022/NEON.D03.DSNY.DP4.00200.001.nsae.2017-03.basic.20211220T152138Z.h5/"
+firstFlux <- stackEddy(filepath = unzippedFilePaths[1],
+                   level = "dp04")
+
+fluxFrame <- data.frame(fluxDSNY201703co2nsae = firstFlux$DSNY$data.fluxCo2.nsae.flux)
+
+# populate data frame with dp04 files NOT WORKING YET
+i <- 2
+while(i < length(outfile)+1){
+    tempFlux <- stackEddy(filepath = unzippedFilePaths[i],
+                          level = "dp04")
+    fluxFrame$FILENAME = tempFlux
+  i <- i + 1
+}
 
 
-# Create overall data frame
-overallFrame <- data.frame()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 # Read in data to flux variable
 # MARCH 2017
