@@ -33,6 +33,16 @@ while(i < length(outfile)+1){
 }
 
 
+
+
+# load all data into variable
+eddy_data <- stackEddy(filepath = "Z:/students/ggrossman/data/unzipped_files/",
+                       level = "dp04")
+
+
+test <- stackEddy(filepath = "data/test_eddy/",
+                  level = "dp04")
+
 # first flux to get data frame started NOT WORKING YET
 
 unzippedFilePaths <- list.files(path = "data/unzipped_eddy_flux/", pattern = ".h5", full.names = T, recursive = T)
