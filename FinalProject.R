@@ -36,23 +36,38 @@ while(i < length(outfile)+1){
 
 
 # load all data into variable
-eddy_data <- stackEddy(filepath = "Z:/students/ggrossman/data/unzipped_files/",
-                       level = "dp04")
-
-
-test <- stackEddy(filepath = "data/test_eddy/",
+eddy_data <- stackEddy(filepath = "data/test_eddy/",
                   level = "dp04")
 
-# first flux to get data frame started NOT WORKING YET
+DSNY_eddy_data <- stackEddy(filepath = "data/DSNY/",
+                         level = "dp04")
 
-unzippedFilePaths <- list.files(path = "data/unzipped_eddy_flux/", pattern = ".h5", full.names = T, recursive = T)
+UNDE_eddy_data <- stackEddy(filepath = "data/UNDE/",
+                            level = "dp04")
 
-# MARCH 2017
-firstFluxPath <- "data/unzipped_eddy_flux/NEON.D03.DSNY.DP4.00200.001.2017-03.basic.20220120T173946Z.RELEASE-2022/NEON.D03.DSNY.DP4.00200.001.nsae.2017-03.basic.20211220T152138Z.h5/"
-firstFlux <- stackEddy(filepath = unzippedFilePaths[1],
-                   level = "dp04")
+STER_eddy_data <- stackEddy(filepath = "data/STER/",
+                            level = "dp04")
 
-fluxFrame <- data.frame(fluxDSNY201703co2nsae = firstFlux$DSNY$data.fluxCo2.nsae.flux)
+ABBY_eddy_data <- stackEddy(filepath = "data/ABBY/",
+                            level = "dp04")
+
+
+
+# plot DSNY nsae eddy data
+# plot DSNY co2 nsae fluxes 
+plot(DSNY_eddy_data$DSNY$data.fluxCo2.nsae.flux ~ DSNY_eddy_data$DSNY$timeBgn, 
+     type="l", pch=".", xlab="Time", ylab="CO2 flux")
+
+# plot UNDE co2 nsae fluxes
+plot(UNDE_eddy_data$UNDE$data.fluxCo2.nsae.flux ~ UNDE_eddy_data$UNDE$timeBgn, 
+     type="l", pch=".", xlab="Time", ylab="CO2 flux", # xlim = c(UNDE_eddy_data$UNDE$timeBgn[20000], UNDE_eddy_data$UNDE$timeBgn[40000]),
+     ylim = c(-100, 100))
+
+
+
+
+fluxFrame <- data.frame(fluxDSNY = DSNY_eddy_data$DSNY$data.fluxCo2.nsae.flux)
+fluxFrame$fluxUNDE <- UNDE_eddy_data$UNDE$data.fluxCo2.nsae.flux
 
 # populate data frame with dp04 files NOT WORKING YET
 i <- 2
@@ -103,41 +118,3 @@ append(allCo2FluxNsae, flux1$DSNY$data.fluxCo2.nsae.flux)
 
 allTimes <- flux2$DSNY$timeBgn
 append(allTimes, flux1$DSNY$timeBgn)
-
-# plot all co2 nsae fluxes in co2 flux nsae vector with all times in time vector
-plot(allCo2FluxNsae ~ allTime, 
-     type="l", pch=".", xlab="Time", ylab="CO2 flux")
-
-# add elements to overall vector
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# list.files will list everything in working directory, recursive = true, simple pattern matching, fullpath = true gives full path
-# for loop to unzip all files, list all hdf5 files, write another loop to read NSAE variables and length of it 
-
-# Unzip .gz file
-gunzip(fileUrl)
-
-# read in data
-h5readAttributes(file = fileURL,
-                 name = "DSNY/dp01/data")
