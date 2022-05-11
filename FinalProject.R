@@ -446,9 +446,22 @@ weather_averages_frame <- data.frame(DSNY = DSNY_seasonal_weather_aves,
                                      ABBY = ABBY_seasonal_weather_aves)
 
 
-# regressions
-
+# site-specific regressions
 DSNY_regression <- lm(flux_sds$DSNY_sts~weather_averages_frame$DSNY)
 UNDE_regression <- lm(flux_sds$UNDE_sts~weather_averages_frame$UNDE)
 STER_regression <- lm(flux_sds$STER_sts~weather_averages_frame$STER)
 ABBY_regression <- lm(flux_sds$ABBY_sts~weather_averages_frame$ABBY)
+
+# add all sites co2 flux standard deviations and weather aves to single column of data frame 
+
+co2_flux_master_vector <- c(DSNY_seasonal_sts, UNDE_seasonal_sts, STER_seasonal_sts,
+                            ABBY_seasonal_sts)
+
+weather_aves_master_vector <- c(DSNY_seasonal_weather_aves, UNDE_seasonal_weather_aves,
+                                STER_seasonal_weather_aves, ABBY_seasonal_weather_aves)
+
+master_frame <- data.frame(combined_sds = co2_flux_master_vector)
+master_frame$combined_weather_aves <- weather_aves_master_vector
+
+# overall co2 nsae flux sts vs seasonal weather aves regression
+master_regression <- lm(master_frame$combined_sds~master_frame$combined_weather_aves)
