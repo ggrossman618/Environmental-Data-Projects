@@ -235,19 +235,20 @@ for(i in 1:21) {
 # for loop to create STER seasonal graphs
 par(mfrow = c(2,2))
 STER_seasonal_plot_indexes <- c(NA,1,3937,8305,12625,17041,21457,25825,30145,34561,38977,43345,47713,
-                                52129,56545,60913,65233,69649,74065,78433,81792)
+     52129,56545,60913,65233,69649,74065,78433,81792)
 seasons <- c("Spring", "Summer", "Fall", "Winter")
 season <- 1
 year <- 2017
 for(i in 1:21) {
   if(i == 1){
-    plot()
+    plot.new()
+  } else {
+    plot(STER_NSAE_limited ~ STER_eddy_data$STER$timeBgn, 
+        type="l", pch=".", xlab="Time", ylab="CO2 flux",
+        xlim = c(STER_eddy_data$STER$timeBgn[STER_seasonal_plot_indexes[i]], 
+                 STER_eddy_data$STER$timeBgn[STER_seasonal_plot_indexes[i+1]]),
+        main=seasons[season])
   }
-  plot(STER_NSAE_limited ~ STER_eddy_data$STER$timeBgn, 
-       type="l", pch=".", xlab="Time", ylab="CO2 flux",
-       xlim = c(STER_eddy_data$STER$timeBgn[STER_seasonal_plot_indexes[i]], 
-                STER_eddy_data$STER$timeBgn[STER_seasonal_plot_indexes[i+1]]),
-       main=seasons[season])
   mtext(paste("STER CO2 nsae flux", year, collapse = NULL), side = 3, line = -16, outer = TRUE)
   if(season != 4){
     season <- season + 1
@@ -257,23 +258,135 @@ for(i in 1:21) {
   }
 }
 
-fluxFrame <- data.frame(fluxTime = STER_eddy_data$STER$timeBgn)
+# for loop to create ABBY seasonal graphs
+par(mfrow = c(2,2))
+ABBY_seasonal_plot_indexes <- c(NA,1,2449,6817,11137,15553,19969,24337,28657,33073,37489,41857,46225,
+                                50641,55057,59425,63745,68161,72577,76949,80304)
+seasons <- c("Spring", "Summer", "Fall", "Winter")
+season <- 1
+year <- 2017
+for(i in 1:21) {
+  if(i == 1){
+    plot.new()
+  } else {
+    plot(ABBY_NSAE_limited ~ ABBY_eddy_data$ABBY$timeBgn, 
+         type="l", pch=".", xlab="Time", ylab="CO2 flux",
+         xlim = c(ABBY_eddy_data$ABBY$timeBgn[ABBY_seasonal_plot_indexes[i]], 
+                  ABBY_eddy_data$ABBY$timeBgn[ABBY_seasonal_plot_indexes[i+1]]),
+         main=seasons[season])
+  }
+  mtext(paste("ABBY CO2 nsae flux", year, collapse = NULL), side = 3, line = -16, outer = TRUE)
+  if(season != 4){
+    season <- season + 1
+  } else {
+    season <- 1
+    year <- year + 1
+  }
+}
+
+
+# find standard deviations of all seasons for all test sites
+DSNY_seasonal_integrals <- c()
+UNDE_seasonal_integrals <- c()
+STER_seasonal_integrals <- c()
+ABBY_seasonal_integrals <- c()
 
 
 
+# DSNY standard deviations
+for(i in 1:20){
+  temp_DSNY_sd <- sd(DSNY_NSAE_limited[DSNY_seasonal_plot_indexes[i]:DSNY_seasonal_plot_indexes[i+1]])
+  DSNY_seasonal_integrals <- append(DSNY_seasonal_integrals, temp_DSNY_sd)
+}
+
+# UNDE standard deviations
+for(i in 1:20){
+  temp_UNDE_sd <- sd(UNDE_NSAE_limited[UNDE_seasonal_plot_indexes[i]:UNDE_seasonal_plot_indexes[i+1]])
+  UNDE_seasonal_integrals <- append(UNDE_seasonal_integrals, temp_UNDE_sd)
+}
 
 
+# STER standard deviations
+for(i in 2:20){
+  temp_STER_sd <- sd(STER_NSAE_limited[STER_seasonal_plot_indexes[i]:STER_seasonal_plot_indexes[i+1]])
+  STER_seasonal_integrals <- append(STER_seasonal_integrals, temp_STER_sd)
+}
+STER_seasonal_integrals <- append(STER_seasonal_integrals, NA, 0)
 
 
-
-# individual seasons graphs
-plot(DSNY_NSAE_limited ~ DSNY_eddy_data$DSNY$timeBgn, 
-     type="l", pch=".", xlab="Time", ylab="CO2 flux", 
-     xlim = c(DSNY_eddy_data$DSNY$timeBgn[53569], DSNY_eddy_data$DSNY$timeBgn[57985]))
-
-# calculate area under a DSNY plot
-DSNY_AUC <- AUC(DSNY_NSAE_limited, DSNY_eddy_data$DSNY$timeBgn, na.rm = T)
+# ABBY standard deviations
+for(i in 2:20){
+  temp_ABBY_sd <- sd(ABBY_NSAE_limited[ABBY_seasonal_plot_indexes[i]:ABBY_seasonal_plot_indexes[i+1]])
+  ABBY_seasonal_integrals <- append(ABBY_seasonal_integrals, temp_ABBY_sd)
+}
+ABBY_seasonal_integrals <- append(ABBY_seasonal_integrals, NA, 0)
 
 
+# add all standard deviations to a data frame
+flux_sds <- data.frame(DSNY_sts = DSNY_seasonal_integrals, UNDE_sts = UNDE_seasonal_integrals,
+                       STER_sts = STER_seasonal_integrals, ABBY_sts = ABBY_seasonal_integrals)
 
+#import weather data
+DSNY_weather_data <- read.csv("data/weather_no_parent/DSNY_combined.csv", header=TRUE)
+UNDE_weather_data <- read.csv("data/weather_no_parent/UNDE_combined.csv", header=TRUE)
+STER_weather_data <- read.csv("data/weather_no_parent/STER_combined.csv", header=TRUE)
+ABBY_weather_data <- read.csv("data/weather_no_parent/ABBY_combined.csv", header=TRUE)
+
+
+# create season averages
+weather_indexes <- c(3801,8217,12633,17003,21321,25737,30153,34523,38841,43257,47673,
+                     52043,56409,60825,65241,69611, 73929,78345,82761,87131,91449)
+
+# --> DSNY
+DSNY_seasonal_weather_aves <- c()
+
+for(i in 1:20){
+  temp_weather_collectionDSNY <- c(DSNY_weather_data$tempTripleMean[weather_indexes[i]], 
+                               DSNY_weather_data$tempTripleMean[weather_indexes[i+1]])
+  temp_ave <- round(mean(temp_weather_collectionDSNY) ,2)
+  DSNY_seasonal_weather_aves <- append(DSNY_seasonal_weather_aves, temp_ave)
+}
+
+# --> UNDE
+UNDE_seasonal_weather_aves <- c()
+
+for(i in 1:20){
+  temp_weather_collectionUNDE <- c(UNDE_weather_data$tempTripleMean[weather_indexes[i]], 
+                               UNDE_weather_data$tempTripleMean[weather_indexes[i+1]])
+  temp_ave <- round(mean(temp_weather_collectionUNDE), 2)
+  UNDE_seasonal_weather_aves <- append(UNDE_seasonal_weather_aves, temp_ave)
+}
+
+# --> DSNY
+STER_seasonal_weather_aves <- c()
+
+for(i in 1:20){
+  temp_weather_collectionSTER <- c(STER_weather_data$tempTripleMean[weather_indexes[i]], 
+                               STER_weather_data$tempTripleMean[weather_indexes[i+1]])
+  temp_ave <- round(mean(temp_weather_collectionSTER), 2)
+  STER_seasonal_weather_aves <- append(STER_seasonal_weather_aves, temp_ave)
+}
+
+# --> DSNY
+ABBY_seasonal_weather_aves <- c()
+
+for(i in 1:20){
+  temp_weather_collectionABBY <- c(ABBY_weather_data$tempTripleMean[weather_indexes[i]], 
+                               ABBY_weather_data$tempTripleMean[weather_indexes[i+1]])
+  temp_ave <- round(mean(temp_weather_collectionABBY), 2)
+  ABBY_seasonal_weather_aves <- append(ABBY_seasonal_weather_aves, temp_ave)
+}
+
+weather_averages_frame <- data.frame(DSNY = DSNY_seasonal_weather_aves,
+                                     UNDE = UNDE_seasonal_weather_aves,
+                                     STER = STER_seasonal_weather_aves,
+                                     ABBY = ABBY_seasonal_weather_aves)
+
+
+# regressions
+
+DSNY_regression <- lm(flux_sds$DSNY_sts~weather_averages_frame$DSNY)
+UNDE_regression <- lm(flux_sds$UNDE_sts~weather_averages_frame$UNDE)
+STER_regression <- lm(flux_sds$STER_sts~weather_averages_frame$STER)
+ABBY_regression <- lm(flux_sds$ABBY_sts~weather_averages_frame$ABBY)
 
