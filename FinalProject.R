@@ -1,10 +1,10 @@
 # install -- Only do once!
-#install.packages('R.utils')
-#install.packages("BiocManager")
-#install.packages("DescTools")
-#install.packages("neonUtilities")
-#install.packages("imputeTS")
-#BiocManager::install("rhdf5")
+# install.packages('R.utils')
+# install.packages("BiocManager")
+# install.packages("DescTools")
+# install.packages("neonUtilities")
+# install.packages("imputeTS")
+# BiocManager::install("rhdf5")
 
 # Libraries
 library(data.table)
@@ -33,7 +33,7 @@ while(i < length(outfile)+1){
 
 # load all data into separate variable
 DSNY_eddy_data <- stackEddy(filepath = "data/DSNY/",
-                         level = "dp04")
+                            level = "dp04")
 
 UNDE_eddy_data <- stackEddy(filepath = "data/UNDE/",
                             level = "dp04")
@@ -84,9 +84,11 @@ DSNY_interpolations <- na_interpolation(DSNY_NSAE_limited, option = "spline")
 
 #add all interpolated values into limited co2 nsae data
 iterator <- 1
+DSNY_added_interp_locs <- c()
 for(i in 1:length(DSNY_NSAE_limited)){
   if(is.na(DSNY_NSAE_limited[i]) == TRUE){
     DSNY_NSAE_limited[i] <- DSNY_interpolations[iterator]
+    DSNY_added_interp_locs <- append(DSNY_added_interp_locs, i)
   }
 }
 
@@ -104,9 +106,11 @@ UNDE_interpolations <- na_interpolation(UNDE_NSAE_limited, option = "spline")
 
 #add all interpolated values into limited co2 nsae data
 iterator <- 1
+UNDE_added_interp_locs <- c()
 for(i in 1:length(UNDE_NSAE_limited)){
   if(is.na(UNDE_NSAE_limited[i]) == TRUE){
     UNDE_NSAE_limited[i] <- UNDE_interpolations[iterator]
+    UNDE_added_interp_locs <- append(UNDE_added_interp_locs, i)
   }
 }
 
@@ -124,9 +128,11 @@ STER_interpolations <- na_interpolation(STER_NSAE_limited, option = "spline")
 
 #add all interpolated values into limited co2 nsae data
 iterator <- 1
+STER_added_interp_locs <- c()
 for(i in 1:length(STER_NSAE_limited)){
   if(is.na(STER_NSAE_limited[i]) == TRUE){
     STER_NSAE_limited[i] <- STER_interpolations[iterator]
+    STER_added_interp_locs <- append(STER_added_interp_locs, i)
   }
 }
 
@@ -144,9 +150,11 @@ ABBY_interpolations <- na_interpolation(ABBY_NSAE_limited, option = "spline")
 
 #add all interpolated values into limited co2 nsae data
 iterator <- 1
+ABBY_added_interp_locs <- c()
 for(i in 1:length(ABBY_NSAE_limited)){
   if(is.na(ABBY_NSAE_limited[i]) == TRUE){
     ABBY_NSAE_limited[i] <- ABBY_interpolations[iterator]
+    ABBY_added_interp_locs <- append(ABBY_added_interp_locs, i)
   }
 }
 
@@ -235,7 +243,7 @@ for(i in 1:21) {
 # for loop to create STER seasonal graphs
 par(mfrow = c(2,2))
 STER_seasonal_plot_indexes <- c(NA,1,3937,8305,12625,17041,21457,25825,30145,34561,38977,43345,47713,
-     52129,56545,60913,65233,69649,74065,78433,81792)
+                                52129,56545,60913,65233,69649,74065,78433,81792)
 seasons <- c("Spring", "Summer", "Fall", "Winter")
 season <- 1
 year <- 2017
@@ -244,10 +252,10 @@ for(i in 1:21) {
     plot.new()
   } else {
     plot(STER_NSAE_limited ~ STER_eddy_data$STER$timeBgn, 
-        type="l", pch=".", xlab="Time", ylab="CO2 flux",
-        xlim = c(STER_eddy_data$STER$timeBgn[STER_seasonal_plot_indexes[i]], 
-                 STER_eddy_data$STER$timeBgn[STER_seasonal_plot_indexes[i+1]]),
-        main=seasons[season])
+         type="l", pch=".", xlab="Time", ylab="CO2 flux",
+         xlim = c(STER_eddy_data$STER$timeBgn[STER_seasonal_plot_indexes[i]], 
+                  STER_eddy_data$STER$timeBgn[STER_seasonal_plot_indexes[i+1]]),
+         main=seasons[season])
   }
   mtext(paste("STER CO2 nsae flux", year, collapse = NULL), side = 3, line = -16, outer = TRUE)
   if(season != 4){
@@ -286,45 +294,100 @@ for(i in 1:21) {
 
 
 # find standard deviations of all seasons for all test sites
-DSNY_seasonal_integrals <- c()
-UNDE_seasonal_integrals <- c()
-STER_seasonal_integrals <- c()
-ABBY_seasonal_integrals <- c()
+DSNY_seasonal_sts <- c()
+UNDE_seasonal_sts <- c()
+STER_seasonal_sts <- c()
+ABBY_seasonal_sts <- c()
 
 
-
-# DSNY standard deviations
+# DSNY NA filter and standard deviations
 for(i in 1:20){
-  temp_DSNY_sd <- sd(DSNY_NSAE_limited[DSNY_seasonal_plot_indexes[i]:DSNY_seasonal_plot_indexes[i+1]])
-  DSNY_seasonal_integrals <- append(DSNY_seasonal_integrals, temp_DSNY_sd)
+  na_count <- 0
+  for(j in DSNY_seasonal_plot_indexes[i]:DSNY_seasonal_plot_indexes[i+1]){
+    if(j%in%DSNY_added_interp_locs){
+      na_count <- na_count + 1
+    }
+  }
+  
+  print(paste("NA vals: ", na_count, "total measurements: ", 
+              (DSNY_seasonal_plot_indexes[i+1]-DSNY_seasonal_plot_indexes[i])))
+  
+  if(na_count <= (DSNY_seasonal_plot_indexes[i+1]-DSNY_seasonal_plot_indexes[i])*.5){
+    temp_DSNY_sd <- sd(DSNY_NSAE_limited[DSNY_seasonal_plot_indexes[i]:DSNY_seasonal_plot_indexes[i+1]])
+    DSNY_seasonal_sts <- append(DSNY_seasonal_sts, temp_DSNY_sd)
+  } else {
+    DSNY_seasonal_sts <- append(DSNY_seasonal_sts, NA)
+  }
 }
 
-# UNDE standard deviations
+# UNDE NA filter and standard deviations
 for(i in 1:20){
-  temp_UNDE_sd <- sd(UNDE_NSAE_limited[UNDE_seasonal_plot_indexes[i]:UNDE_seasonal_plot_indexes[i+1]])
-  UNDE_seasonal_integrals <- append(UNDE_seasonal_integrals, temp_UNDE_sd)
+  na_count <- 0
+  for(j in UNDE_seasonal_plot_indexes[i]:UNDE_seasonal_plot_indexes[i+1]){
+    if(j%in%UNDE_added_interp_locs){
+      na_count <- na_count + 1
+    }
+  }
+  
+  print(paste("NA vals: ", na_count, "total measurements: ", 
+              (UNDE_seasonal_plot_indexes[i+1]-UNDE_seasonal_plot_indexes[i])))
+  
+  if(na_count <= (UNDE_seasonal_plot_indexes[i+1]-UNDE_seasonal_plot_indexes[i])*.5){
+    temp_UNDE_sd <- sd(UNDE_NSAE_limited[UNDE_seasonal_plot_indexes[i]:UNDE_seasonal_plot_indexes[i+1]])
+    UNDE_seasonal_sts <- append(UNDE_seasonal_sts, temp_UNDE_sd)
+  } else {
+    UNDE_seasonal_sts <- append(UNDE_seasonal_sts, NA)
+  }
 }
 
-
-# STER standard deviations
+# STER NA filter and standard deviations
 for(i in 2:20){
-  temp_STER_sd <- sd(STER_NSAE_limited[STER_seasonal_plot_indexes[i]:STER_seasonal_plot_indexes[i+1]])
-  STER_seasonal_integrals <- append(STER_seasonal_integrals, temp_STER_sd)
+  na_count <- 0
+  for(j in STER_seasonal_plot_indexes[i]:STER_seasonal_plot_indexes[i+1]){
+    if(j%in%STER_added_interp_locs){
+      na_count <- na_count + 1
+    }
+  }
+  
+  print(paste("NA vals: ", na_count, "total measurements: ", 
+              (STER_seasonal_plot_indexes[i+1]-STER_seasonal_plot_indexes[i])))
+  
+  if(na_count <= (STER_seasonal_plot_indexes[i+1]-STER_seasonal_plot_indexes[i])*.5){
+    temp_STER_sd <- sd(STER_NSAE_limited[STER_seasonal_plot_indexes[i]:STER_seasonal_plot_indexes[i+1]])
+    STER_seasonal_sts <- append(STER_seasonal_sts, temp_STER_sd)
+  } else {
+    STER_seasonal_sts <- append(STER_seasonal_sts, NA)
+  }
 }
-STER_seasonal_integrals <- append(STER_seasonal_integrals, NA, 0)
+
+STER_seasonal_sts <- append(STER_seasonal_sts, NA, 0)
 
 
-# ABBY standard deviations
+# ABBY NA filter and standard deviations
 for(i in 2:20){
-  temp_ABBY_sd <- sd(ABBY_NSAE_limited[ABBY_seasonal_plot_indexes[i]:ABBY_seasonal_plot_indexes[i+1]])
-  ABBY_seasonal_integrals <- append(ABBY_seasonal_integrals, temp_ABBY_sd)
+  na_count <- 0
+  for(j in ABBY_seasonal_plot_indexes[i]:ABBY_seasonal_plot_indexes[i+1]){
+    if(j%in%ABBY_added_interp_locs){
+      na_count <- na_count + 1
+    }
+  }
+  
+  print(paste("NA vals: ", na_count, "total measurements: ", 
+              (ABBY_seasonal_plot_indexes[i+1]-ABBY_seasonal_plot_indexes[i])))
+  
+  if(na_count <= (ABBY_seasonal_plot_indexes[i+1]-ABBY_seasonal_plot_indexes[i])*.5){
+    temp_ABBY_sd <- sd(ABBY_NSAE_limited[ABBY_seasonal_plot_indexes[i]:ABBY_seasonal_plot_indexes[i+1]])
+    ABBY_seasonal_sts <- append(ABBY_seasonal_sts, temp_ABBY_sd)
+  } else {
+    ABBY_seasonal_sts <- append(ABBY_seasonal_sts, NA)
+  }
 }
-ABBY_seasonal_integrals <- append(ABBY_seasonal_integrals, NA, 0)
+ABBY_seasonal_sts <- append(ABBY_seasonal_sts, NA, 0)
 
 
 # add all standard deviations to a data frame
-flux_sds <- data.frame(DSNY_sts = DSNY_seasonal_integrals, UNDE_sts = UNDE_seasonal_integrals,
-                       STER_sts = STER_seasonal_integrals, ABBY_sts = ABBY_seasonal_integrals)
+flux_sds <- data.frame(DSNY_sts = DSNY_seasonal_sts, UNDE_sts = UNDE_seasonal_sts,
+                       STER_sts = STER_seasonal_sts, ABBY_sts = ABBY_seasonal_sts)
 
 #import weather data
 DSNY_weather_data <- read.csv("data/weather_no_parent/DSNY_combined.csv", header=TRUE)
@@ -342,7 +405,7 @@ DSNY_seasonal_weather_aves <- c()
 
 for(i in 1:20){
   temp_weather_collectionDSNY <- c(DSNY_weather_data$tempTripleMean[weather_indexes[i]], 
-                               DSNY_weather_data$tempTripleMean[weather_indexes[i+1]])
+                                   DSNY_weather_data$tempTripleMean[weather_indexes[i+1]])
   temp_ave <- round(mean(temp_weather_collectionDSNY) ,2)
   DSNY_seasonal_weather_aves <- append(DSNY_seasonal_weather_aves, temp_ave)
 }
@@ -352,7 +415,7 @@ UNDE_seasonal_weather_aves <- c()
 
 for(i in 1:20){
   temp_weather_collectionUNDE <- c(UNDE_weather_data$tempTripleMean[weather_indexes[i]], 
-                               UNDE_weather_data$tempTripleMean[weather_indexes[i+1]])
+                                   UNDE_weather_data$tempTripleMean[weather_indexes[i+1]])
   temp_ave <- round(mean(temp_weather_collectionUNDE), 2)
   UNDE_seasonal_weather_aves <- append(UNDE_seasonal_weather_aves, temp_ave)
 }
@@ -362,7 +425,7 @@ STER_seasonal_weather_aves <- c()
 
 for(i in 1:20){
   temp_weather_collectionSTER <- c(STER_weather_data$tempTripleMean[weather_indexes[i]], 
-                               STER_weather_data$tempTripleMean[weather_indexes[i+1]])
+                                   STER_weather_data$tempTripleMean[weather_indexes[i+1]])
   temp_ave <- round(mean(temp_weather_collectionSTER), 2)
   STER_seasonal_weather_aves <- append(STER_seasonal_weather_aves, temp_ave)
 }
@@ -372,7 +435,7 @@ ABBY_seasonal_weather_aves <- c()
 
 for(i in 1:20){
   temp_weather_collectionABBY <- c(ABBY_weather_data$tempTripleMean[weather_indexes[i]], 
-                               ABBY_weather_data$tempTripleMean[weather_indexes[i+1]])
+                                   ABBY_weather_data$tempTripleMean[weather_indexes[i+1]])
   temp_ave <- round(mean(temp_weather_collectionABBY), 2)
   ABBY_seasonal_weather_aves <- append(ABBY_seasonal_weather_aves, temp_ave)
 }
@@ -389,4 +452,3 @@ DSNY_regression <- lm(flux_sds$DSNY_sts~weather_averages_frame$DSNY)
 UNDE_regression <- lm(flux_sds$UNDE_sts~weather_averages_frame$UNDE)
 STER_regression <- lm(flux_sds$STER_sts~weather_averages_frame$STER)
 ABBY_regression <- lm(flux_sds$ABBY_sts~weather_averages_frame$ABBY)
-
